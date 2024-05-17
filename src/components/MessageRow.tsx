@@ -7,6 +7,6 @@ export default function MessageRow({ content, isFromCurrentUser }: MessageRowPro
       <div className="flex-grow" />
       <div className="hidden">Chat Actions</div>
       <div className={`py-2 px-4 rounded-2xl ${isFromCurrentUser ? 'bg-sky-200' : 'bg-gray-200'}`}>{content}</div>
-    </div>
+    </div >
   )
 }

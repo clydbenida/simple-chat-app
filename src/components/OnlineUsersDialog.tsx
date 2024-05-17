@@ -1,15 +1,16 @@
 import { Dialog, DialogContent, Divider, List, ListItemButton, ListItemText } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import fetchAPI from "../api";
-import { UserType } from "../types";
+import { ChatSessionType, UserType } from "../types";
 
 interface OnlineUsersDialogProps {
   showOnlineUsers: boolean;
   currentUser: UserType;
   handleCloseOnlineUsers: () => void;
+  setSelectedSession: React.Dispatch<ChatSessionType | undefined>;
 }
 
-export default function OnlineUsersDialog({ showOnlineUsers, currentUser, handleCloseOnlineUsers }: OnlineUsersDialogProps) {
+export default function OnlineUsersDialog({ showOnlineUsers, currentUser, handleCloseOnlineUsers, setSelectedSession }: OnlineUsersDialogProps) {
   const [onlineUsers, setOnlineUsers] = useState<UserType[]>([]);
 
   useEffect(() => {
@@ -28,6 +29,10 @@ export default function OnlineUsersDialog({ showOnlineUsers, currentUser, handle
   async function handleClickListItemButton(recipient_id: number) {
     const { data } = await fetchAPI("post", "/chat_session", { user_ids: [currentUser.user_id, recipient_id] });
     console.log("response data", data)
+    if (data) {
+      setSelectedSession(data);
+      handleCloseOnlineUsers();
+    }
   }
 
   const renderOnlineUserList = useMemo(

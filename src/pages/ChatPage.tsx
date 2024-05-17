@@ -6,7 +6,7 @@ import Sidebar from "../components/Sidebar";
 import fetchAPI, { socket } from "../api";
 import OnlineUsersDialog from "../components/OnlineUsersDialog";
 import { ChatSessionType, MessageType, UserType } from "../types";
-import Chat from "../components/Chat";
+import ConversationPanel from "../components/ConversationPanel";
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -30,7 +30,6 @@ export default function ChatPage() {
   useEffect(() => {
     if (selectedSession) {
       socket.emit('join-session', selectedSession?.chat_session_id);
-      console.log("Joined room", selectedSession);
 
       socket.on("receive-message", (message) => {
         setNewMessage({
@@ -91,20 +90,18 @@ export default function ChatPage() {
   }, []);
 
   return (
-    <div className="grid grid-cols-4 w-screen h-screen">
+    <div className="grid grid-cols-4 w-screen h-screen max-h-screen">
       <div className="border border-gray-200">
-        {chatSessions.length > 0 && (
-          <Sidebar
-            currentUser={user!}
-            setSelectedSession={setSelectedSession}
-            selectedSession={selectedSession}
-            chatSessions={chatSessions}
-            handleOpenOnlineUsers={handleOpenOnlineUsers}
-          />
-        )}
+        <Sidebar
+          currentUser={user!}
+          setSelectedSession={setSelectedSession}
+          selectedSession={selectedSession}
+          chatSessions={chatSessions}
+          handleOpenOnlineUsers={handleOpenOnlineUsers}
+        />
       </div>
 
-      <Chat
+      <ConversationPanel
         currentUser={user!}
         selectedSession={selectedSession!}
         isConnected={isConnected}
@@ -115,6 +112,7 @@ export default function ChatPage() {
         currentUser={user!}
         showOnlineUsers={showOnlineUsers}
         handleCloseOnlineUsers={handleCloseOnlineUsers}
+        setSelectedSession={setSelectedSession}
       />
     </div>
   )

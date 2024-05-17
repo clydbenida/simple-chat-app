@@ -1,7 +1,24 @@
-import React from "react";
+import { DialogProps } from "@mui/material";
+import React, { FormEvent, SetStateAction } from "react";
+
+export type AttachmentTypes = string;
 
 export interface ChatPageActionTypes {
   username: string;
+}
+
+export interface MediaCaptureDialogProps extends DialogProps {
+  closeMediaCapture: () => void;
+  setAttachments: React.Dispatch<SetStateAction<string[] | undefined>>
+}
+
+export interface MessageComposerPropTypes {
+  message: string;
+  sendMessage: (e: FormEvent) => void;
+  setMessage: React.Dispatch<string>;
+  openMediaCapture: () => void;
+  closeMediaCapture: () => void;
+  attachments?: AttachmentTypes[];
 }
 
 export interface ChatProps {
@@ -21,6 +38,7 @@ export interface ChatSessionType {
   chat_session_id: number;
   chat_session_name?: string;
   participants: ParticipantType[];
+  messages: MessageType[];
 }
 
 export interface SideBarProps {

@@ -31,14 +31,14 @@ export default function Sidebar({
         onClick={() => handleClickChatItem(item)}
         active={selectedSession?.chat_session_id === item.chat_session_id}
         chatName={chatName}
-        recentMessage="just a test for a while"
+        recentMessage={item?.messages[0]?.content ?? "No message yet"}
       />
     )
   }), [chatSessions, selectedSession]);
 
   return (
     <div>
-      <div className="border-b border-gray-200 p-2">
+      <div className="pt-2 px-2">
         <button
           onClick={handleOpenOnlineUsers}
           type="button"
@@ -47,7 +47,7 @@ export default function Sidebar({
           New Chat
         </button>
       </div>
-      <div className="px-2 ">
+      <div className="px-2 overflow-y-auto ">
         {renderChatItems}
       </div>
     </div>

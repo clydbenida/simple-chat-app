@@ -13,8 +13,8 @@ export default function ChatItem({ active, recentMessage, chatName, onClick }: C
         <div className="font-bold">
           {chatName}
         </div>
-        <div>
-          {recentMessage}...
+        <div className="text-gray-400">
+          {recentMessage}
         </div>
       </div>
       <div><img src={dots} width={32} /></div>
