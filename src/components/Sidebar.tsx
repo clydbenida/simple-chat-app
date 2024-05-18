@@ -7,34 +7,47 @@ export default function Sidebar({
   handleOpenOnlineUsers,
   selectedSession,
   setSelectedSession,
-  currentUser
+  currentUser,
+  newChatMessage,
 }: SideBarProps) {
   function handleClickChatItem(chatSession: ChatSessionType) {
     setSelectedSession(chatSession);
   }
 
-  const generateChatName = useCallback((participants: ParticipantType[]) => {
-    const filteredParticipants = participants.filter(participant => participant.user.user_id !== currentUser?.user_id);
+  const generateChatName = useCallback(
+    (participants: ParticipantType[]) => {
+      const filteredParticipants = participants.filter(
+        (participant) => participant.user.user_id !== currentUser?.user_id,
+      );
 
-    if (filteredParticipants.length === 1) {
-      return filteredParticipants[0].user.username;
-    }
+      if (filteredParticipants.length === 1) {
+        return filteredParticipants[0].user.username;
+      }
 
-    return filteredParticipants.map(participant => participant.user.username).join(", ");
-  }, [currentUser?.user_id]);
+      return filteredParticipants
+        .map((participant) => participant.user.username)
+        .join(", ");
+    },
+    [currentUser?.user_id],
+  );
 
-  const renderChatItems = useMemo(() => chatSessions!.map((item) => {
-    const chatName = item.chat_session_name || generateChatName(item.participants);
+  const renderChatItems = useMemo(
+    () =>
+      chatSessions!.map((item) => {
+        const chatName =
+          item.chat_session_name || generateChatName(item.participants);
 
-    return (
-      <ChatItem
-        onClick={() => handleClickChatItem(item)}
-        active={selectedSession?.chat_session_id === item.chat_session_id}
-        chatName={chatName}
-        recentMessage={item?.messages[0]?.content ?? "No message yet"}
-      />
-    )
-  }), [chatSessions, selectedSession]);
+        return (
+          <ChatItem
+            onClick={() => handleClickChatItem(item)}
+            active={selectedSession?.chat_session_id === item.chat_session_id}
+            chatName={chatName}
+            recentMessage={item?.messages[0]?.content ?? "No message yet"}
+          />
+        );
+      }),
+    [chatSessions, selectedSession],
+  );
 
   return (
     <div>
@@ -47,9 +60,7 @@ export default function Sidebar({
           New Chat
         </button>
       </div>
-      <div className="px-2 overflow-y-auto ">
-        {renderChatItems}
-      </div>
+      <div className="px-2 overflow-y-auto ">{renderChatItems}</div>
     </div>
-  )
+  );
 }

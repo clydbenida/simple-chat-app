@@ -1,12 +1,17 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import fetchAPI, { socket } from "../api";
-import { ChatProps, MessageType, ParticipantType } from "../types";
+import { ConversationPanelProps, MessageType, ParticipantType } from "../types";
 import MessageRow from "./MessageRow";
 import { Call, MenuOpen } from "@mui/icons-material";
 import MessageComposer from "./MessageComposer";
 import MediaCaptureDialog from "./MediaCaptureDialog";
 
-export default function ConversationPanel({ isConnected, selectedSession, currentUser, newChatMessage }: ChatProps) {
+export default function ConversationPanel({
+  isConnected,
+  selectedSession,
+  currentUser,
+  newChatMessage,
+}: ConversationPanelProps) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [showMediaCapture, setShowMediaCapture] = useState(false);
@@ -14,40 +19,48 @@ export default function ConversationPanel({ isConnected, selectedSession, curren
 
   const recepientDetails = useMemo<ParticipantType | undefined>(() => {
     if (selectedSession?.participants) {
-      const participants = [...selectedSession.participants]
-      const [recepientDetails] = participants.filter(item => item.user.user_id !== currentUser.user_id);
+      const participants = [...selectedSession.participants];
+      const [recepientDetails] = participants.filter(
+        (item) => item.user.user_id !== currentUser.user_id,
+      );
 
-      return recepientDetails
+      return recepientDetails;
     }
   }, [messages]);
 
   const currentUserParticipantId = useMemo(() => {
     if (selectedSession?.participants) {
-      const participants = [...selectedSession.participants]
-      const [currentUserParticipantDetails] = participants.filter(item => item.user.user_id === currentUser.user_id);
+      const participants = [...selectedSession.participants];
+      const [currentUserParticipantDetails] = participants.filter(
+        (item) => item.user.user_id === currentUser.user_id,
+      );
 
-      return currentUserParticipantDetails.participant_id
+      return currentUserParticipantDetails.participant_id;
     }
     return 0;
-  }, [messages])
+  }, [messages]);
 
   const appendMessage = (newMessage: MessageType) => {
-    setMessages(prev => {
-      return ([newMessage, ...prev])
+    setMessages((prev) => {
+      return [newMessage, ...prev];
     });
-  }
+  };
 
   const sendMessage = (e: FormEvent) => {
     e.preventDefault();
 
     if (isConnected && selectedSession) {
-      socket.emit("send-message", {
-        message: message,
-        chatSession: selectedSession,
-        currentUser: currentUser
-      }, () => {
-        console.log("Message sent!");
-      });
+      socket.emit(
+        "send-message",
+        {
+          message: message,
+          chatSession: selectedSession,
+          currentUser: currentUser,
+        },
+        () => {
+          console.log("Message sent!");
+        },
+      );
 
       appendMessage({
         content: message,
@@ -57,7 +70,7 @@ export default function ConversationPanel({ isConnected, selectedSession, curren
         read_status: false,
         message_id: messages[0].message_id + 1,
         participant_id: currentUserParticipantId,
-      })
+      });
 
       setMessage("");
     }
@@ -65,18 +78,18 @@ export default function ConversationPanel({ isConnected, selectedSession, curren
 
   const openMediaCaptureDialog = () => {
     setShowMediaCapture(true);
-  }
+  };
 
   const closeMediaCaptureDialog = () => {
     setShowMediaCapture(false);
-  }
+  };
 
   useEffect(() => {
     async function fetchMessages() {
       const { data } = await fetchAPI(
         "get",
-        `/messages?limit=${30}&offset=${0}&chat_session_id=${selectedSession.chat_session_id}`
-      )
+        `/messages?limit=${30}&offset=${0}&chat_session_id=${selectedSession.chat_session_id}`,
+      );
 
       setMessages(data.rows);
     }
@@ -89,7 +102,7 @@ export default function ConversationPanel({ isConnected, selectedSession, curren
       if (attachments?.length || message.length) {
         console.log("trigger save draft");
       }
-    }
+    };
   }, [selectedSession]);
 
   useEffect(() => {
@@ -98,18 +111,24 @@ export default function ConversationPanel({ isConnected, selectedSession, curren
     }
   }, [newChatMessage]);
 
-  const renderMessageRows = useMemo(() => messages.map(item => {
-    return (
-      <MessageRow
-        content={item?.content}
-        isFromCurrentUser={item?.participant_id === currentUserParticipantId}
-      />
-    )
-  }), [messages, currentUserParticipantId]);
+  const renderMessageRows = useMemo(
+    () =>
+      messages.map((item) => {
+        return (
+          <MessageRow
+            content={item?.content}
+            isFromCurrentUser={
+              item?.participant_id === currentUserParticipantId
+            }
+          />
+        );
+      }),
+    [messages, currentUserParticipantId],
+  );
 
   return (
     <div className="col-span-3 h-full flex flex-col">
-      {selectedSession ?
+      {selectedSession ? (
         <>
           <div className="flex justify-between border-b items-center px-4 py-4">
             <div>
@@ -141,14 +160,17 @@ export default function ConversationPanel({ isConnected, selectedSession, curren
             attachments={attachments}
           />
 
-          <MediaCaptureDialog open={showMediaCapture} closeMediaCapture={closeMediaCaptureDialog} setAttachments={setAttachments} />
-
+          <MediaCaptureDialog
+            open={showMediaCapture}
+            closeMediaCapture={closeMediaCaptureDialog}
+            setAttachments={setAttachments}
+          />
         </>
-        :
+      ) : (
         <div className="flex justify-center items-center flex-grow w-full bg-gray-50">
           Select a conversation to start a chat.
         </div>
-      }
+      )}
     </div>
-  )
+  );
 }

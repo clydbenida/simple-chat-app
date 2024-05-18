@@ -9,7 +9,7 @@ export interface ChatPageActionTypes {
 
 export interface MediaCaptureDialogProps extends DialogProps {
   closeMediaCapture: () => void;
-  setAttachments: React.Dispatch<SetStateAction<string[] | undefined>>
+  setAttachments: React.Dispatch<SetStateAction<string[] | undefined>>;
 }
 
 export interface MessageComposerPropTypes {
@@ -21,7 +21,7 @@ export interface MessageComposerPropTypes {
   attachments?: AttachmentTypes[];
 }
 
-export interface ChatProps {
+export interface ConversationPanelProps {
   isConnected: boolean;
   selectedSession: ChatSessionType;
   currentUser: UserType;
@@ -47,11 +47,12 @@ export interface SideBarProps {
   setSelectedSession: React.Dispatch<ChatSessionType | undefined>;
   handleOpenOnlineUsers: () => void;
   chatSessions?: ChatSessionType[];
+  newChatMessage?: MessageType[];
 }
 
 export interface UserType {
-  user_id: number,
-  username: string,
+  user_id: number;
+  username: string;
 }
 
 export interface ChatItemProps {
@@ -66,7 +67,7 @@ export interface MessageType {
   chat_session_id: number;
   participant_id: number;
   content: string;
-  read_status: boolean
+  read_status: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

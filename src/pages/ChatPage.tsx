@@ -20,16 +20,16 @@ export default function ChatPage() {
   const token = Cookies.get("token");
 
   function handleOpenOnlineUsers() {
-    setShowOnlineUsers(true)
+    setShowOnlineUsers(true);
   }
 
   function handleCloseOnlineUsers() {
-    setShowOnlineUsers(false)
+    setShowOnlineUsers(false);
   }
 
   useEffect(() => {
     if (selectedSession) {
-      socket.emit('join-session', selectedSession?.chat_session_id);
+      socket.emit("join-session", selectedSession?.chat_session_id);
 
       socket.on("receive-message", (message) => {
         setNewMessage({
@@ -39,16 +39,16 @@ export default function ChatPage() {
           createdAt: message.createdAt,
           updatedAt: message.updatedAt,
           message_id: message.message_id,
-          participant_id: message.participant_id
+          participant_id: message.participant_id,
         });
       });
     }
   }, [selectedSession]);
 
   useEffect(() => {
-    const userFromLocal = localStorage.getItem("user")
+    const userFromLocal = localStorage.getItem("user");
     if (!token || !userFromLocal) {
-      navigate("/")
+      navigate("/");
 
       return;
     }
@@ -58,9 +58,11 @@ export default function ChatPage() {
 
   useEffect(() => {
     async function fetchChatSessions() {
-      const { data } = await fetchAPI("get", `/chat_session?user_id=${user?.user_id}`)
+      const { data } = await fetchAPI(
+        "get",
+        `/chat_session?user_id=${user?.user_id}`,
+      );
 
-      console.log("Chat sessions", data)
       if (data) {
         setChatSessions(data);
       }
@@ -80,13 +82,13 @@ export default function ChatPage() {
       setIsConnected(false);
     }
 
-    socket.on('connect', onConnect)
-    socket.on('disconnect', onDisconnect)
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
 
     return () => {
-      socket.off('connect', onConnect)
-      socket.off('disconnect', onDisconnect)
-    }
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
   }, []);
 
   return (
@@ -115,5 +117,5 @@ export default function ChatPage() {
         setSelectedSession={setSelectedSession}
       />
     </div>
-  )
+  );
 }

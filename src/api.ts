@@ -10,7 +10,7 @@ export default async function fetchAPI(
   endpoint: string,
   data?: Record<string, unknown>
 ) {
-  let config: RequestInit = {
+  const config: RequestInit = {
     method,
     headers: {
       'Content-Type': 'application/json',
