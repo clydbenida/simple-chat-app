@@ -39,6 +39,7 @@ export interface ChatSessionType {
   participants: ParticipantType[];
   messages: MessageType[];
   isRead?: boolean;
+  newMessageContent?: string;
 }
 
 export interface SideBarProps {
@@ -48,7 +49,7 @@ export interface SideBarProps {
   handleOpenOnlineUsers: () => void;
   chatSessions?: ChatSessionType[];
   newChatMessage?: MessageType;
-  setChatSessions: React.Dispatch<SetStateAction<ChatSessionType[]>>;
+  setChatSessions?: React.Dispatch<SetStateAction<ChatSessionType[]>>;
 }
 
 export interface UserType {

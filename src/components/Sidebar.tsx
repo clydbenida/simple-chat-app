@@ -32,7 +32,6 @@ export default function Sidebar({
 
   const renderChatItems = useMemo(
     () => {
-      console.log("Render chat items is triggered", chatSessions);
       return chatSessions!.map((item) => {
         const chatName =
           item.chat_session_name || generateChatName(item.participants);
@@ -43,7 +42,7 @@ export default function Sidebar({
             active={selectedSession?.chat_session_id === item.chat_session_id}
             chatName={chatName}
             isRead={Boolean(selectedSession?.isRead)}
-            recentMessage={item?.messages[0]?.content ?? "No message yet"}
+            recentMessage={item.newMessageContent ?? item?.messages[0]?.content ?? "No message yet"}
           />
         );
       });

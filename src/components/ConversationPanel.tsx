@@ -48,7 +48,6 @@ export default function ConversationPanel({
   const sendMessage = (e: FormEvent) => {
     e.preventDefault();
 
-    console.log("Send Message is executed", selectedSession)
     if (selectedSession) {
       socket.emit(
         "send-message",
@@ -56,6 +55,7 @@ export default function ConversationPanel({
           message: message,
           chatSession: selectedSession,
           currentUser: currentUser,
+          recepient_id: recepientDetails?.user.user_id
         },
         () => {
           console.log("Message sent!");
@@ -108,7 +108,7 @@ export default function ConversationPanel({
   useEffect(() => {
     if (
       newChatMessage &&
-      newChatMessage.chat_session_id === selectedSession.chat_session_id
+      newChatMessage?.chat_session_id === selectedSession?.chat_session_id
     ) {
       appendMessage(newChatMessage);
     }

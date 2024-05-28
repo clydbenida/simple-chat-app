@@ -7,12 +7,16 @@ import fetchAPI, { socket } from "../api";
 import OnlineUsersDialog from "../components/OnlineUsersDialog";
 import { ChatSessionType, MessageType, UserType } from "../types";
 import ConversationPanel from "../components/ConversationPanel";
+import { assignChatSessions, pushSessionToTop } from "../redux/slices/chatSessions";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 export default function ChatPage() {
+  const dispatch = useAppDispatch();
+  const chatSessions = useAppSelector(state => state.chatSessions);
   const navigate = useNavigate();
+
   const [showOnlineUsers, setShowOnlineUsers] = useState(false);
   const [user, setUser] = useState<UserType>();
-  const [chatSessions, setChatSessions] = useState<ChatSessionType[]>([]);
   const [selectedSession, setSelectedSession] = useState<ChatSessionType>();
   const [newMessage, setNewMessage] = useState<MessageType>();
 
@@ -27,11 +31,10 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
-    if (selectedSession) {
-      socket.emit("join-session", selectedSession?.chat_session_id);
+    if (user) {
+      socket.emit("join-session", user?.user_id);
 
       socket.on("receive-message", (message) => {
-        console.log("New Message is invoked");
         setNewMessage({
           chat_session_id: message.chat_session_id,
           content: message.content,
@@ -43,7 +46,7 @@ export default function ChatPage() {
         });
       });
     }
-  }, [selectedSession]);
+  }, [user]);
 
   useEffect(() => {
     const userFromLocal = localStorage.getItem("user");
@@ -64,7 +67,8 @@ export default function ChatPage() {
       );
 
       if (data) {
-        setChatSessions(data);
+        console.log("dispatched action");
+        dispatch(assignChatSessions(data));
       }
     }
 
@@ -76,29 +80,14 @@ export default function ChatPage() {
   /*
    *  When a user receives a new message, this side effect puts the chat session with
    *  the new message to the top
-   * */
+   **/
   useEffect(() => {
     if (newMessage) {
-      console.log("newMessage", newMessage);
-      setChatSessions((prev) => {
-        const prevState = [...prev];
-        const popChatSession = prevState.filter(
-          (item) => item.chat_session_id === newMessage.chat_session_id,
-        );
-
-        if (popChatSession) {
-          const filteredChatSession = prevState
-            .filter(
-              (item) => item.chat_session_id !== newMessage.chat_session_id,
-            )
-          console.log("New chat session", prevState);
-          return [{ ...popChatSession[0], isRead: false }, ...filteredChatSession];
-        }
-
-        return prev;
-      });
+      dispatch(pushSessionToTop(newMessage));
     }
   }, [newMessage]);
+
+  console.log("Chat sessions: ", chatSessions)
 
   return (
     <div className="grid grid-cols-4 w-screen h-screen max-h-screen">
@@ -110,7 +99,6 @@ export default function ChatPage() {
           chatSessions={chatSessions}
           handleOpenOnlineUsers={handleOpenOnlineUsers}
           newChatMessage={newMessage}
-          setChatSessions={setChatSessions}
         />
       </div>
 
