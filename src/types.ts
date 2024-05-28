@@ -22,7 +22,6 @@ export interface MessageComposerPropTypes {
 }
 
 export interface ConversationPanelProps {
-  isConnected: boolean;
   selectedSession: ChatSessionType;
   currentUser: UserType;
   newChatMessage?: MessageType;
@@ -39,6 +38,7 @@ export interface ChatSessionType {
   chat_session_name?: string;
   participants: ParticipantType[];
   messages: MessageType[];
+  isRead?: boolean;
 }
 
 export interface SideBarProps {
@@ -47,7 +47,8 @@ export interface SideBarProps {
   setSelectedSession: React.Dispatch<ChatSessionType | undefined>;
   handleOpenOnlineUsers: () => void;
   chatSessions?: ChatSessionType[];
-  newChatMessage?: MessageType[];
+  newChatMessage?: MessageType;
+  setChatSessions: React.Dispatch<SetStateAction<ChatSessionType[]>>;
 }
 
 export interface UserType {
@@ -60,6 +61,7 @@ export interface ChatItemProps {
   active: boolean;
   chatName: string;
   recentMessage: string;
+  isRead: boolean;
 }
 
 export interface MessageType {

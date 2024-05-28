@@ -7,7 +7,6 @@ import MessageComposer from "./MessageComposer";
 import MediaCaptureDialog from "./MediaCaptureDialog";
 
 export default function ConversationPanel({
-  isConnected,
   selectedSession,
   currentUser,
   newChatMessage,
@@ -49,7 +48,8 @@ export default function ConversationPanel({
   const sendMessage = (e: FormEvent) => {
     e.preventDefault();
 
-    if (isConnected && selectedSession) {
+    console.log("Send Message is executed", selectedSession)
+    if (selectedSession) {
       socket.emit(
         "send-message",
         {
@@ -106,7 +106,10 @@ export default function ConversationPanel({
   }, [selectedSession]);
 
   useEffect(() => {
-    if (newChatMessage) {
+    if (
+      newChatMessage &&
+      newChatMessage.chat_session_id === selectedSession.chat_session_id
+    ) {
       appendMessage(newChatMessage);
     }
   }, [newChatMessage]);
@@ -167,8 +170,11 @@ export default function ConversationPanel({
           />
         </>
       ) : (
-        <div className="flex justify-center items-center flex-grow w-full bg-gray-50">
-          Select a conversation to start a chat.
+        <div className="flex text-3xl font-bold justify-center flex-col items-center flex-grow w-full bg-gray-50">
+          No one to talk to?
+          <p className="text-sm font-normal">
+            Select a conversation to start a new chat.
+          </p>
         </div>
       )}
     </div>

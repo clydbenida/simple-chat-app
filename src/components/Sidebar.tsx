@@ -8,7 +8,6 @@ export default function Sidebar({
   selectedSession,
   setSelectedSession,
   currentUser,
-  newChatMessage,
 }: SideBarProps) {
   function handleClickChatItem(chatSession: ChatSessionType) {
     setSelectedSession(chatSession);
@@ -32,8 +31,9 @@ export default function Sidebar({
   );
 
   const renderChatItems = useMemo(
-    () =>
-      chatSessions!.map((item) => {
+    () => {
+      console.log("Render chat items is triggered", chatSessions);
+      return chatSessions!.map((item) => {
         const chatName =
           item.chat_session_name || generateChatName(item.participants);
 
@@ -42,10 +42,12 @@ export default function Sidebar({
             onClick={() => handleClickChatItem(item)}
             active={selectedSession?.chat_session_id === item.chat_session_id}
             chatName={chatName}
+            isRead={Boolean(selectedSession?.isRead)}
             recentMessage={item?.messages[0]?.content ?? "No message yet"}
           />
         );
-      }),
+      });
+    },
     [chatSessions, selectedSession],
   );
 

@@ -10,7 +10,6 @@ import ConversationPanel from "../components/ConversationPanel";
 
 export default function ChatPage() {
   const navigate = useNavigate();
-  const [isConnected, setIsConnected] = useState(false);
   const [showOnlineUsers, setShowOnlineUsers] = useState(false);
   const [user, setUser] = useState<UserType>();
   const [chatSessions, setChatSessions] = useState<ChatSessionType[]>([]);
@@ -32,6 +31,7 @@ export default function ChatPage() {
       socket.emit("join-session", selectedSession?.chat_session_id);
 
       socket.on("receive-message", (message) => {
+        console.log("New Message is invoked");
         setNewMessage({
           chat_session_id: message.chat_session_id,
           content: message.content,
@@ -73,23 +73,32 @@ export default function ChatPage() {
     }
   }, [user]);
 
+  /*
+   *  When a user receives a new message, this side effect puts the chat session with
+   *  the new message to the top
+   * */
   useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
+    if (newMessage) {
+      console.log("newMessage", newMessage);
+      setChatSessions((prev) => {
+        const prevState = [...prev];
+        const popChatSession = prevState.filter(
+          (item) => item.chat_session_id === newMessage.chat_session_id,
+        );
+
+        if (popChatSession) {
+          const filteredChatSession = prevState
+            .filter(
+              (item) => item.chat_session_id !== newMessage.chat_session_id,
+            )
+          console.log("New chat session", prevState);
+          return [{ ...popChatSession[0], isRead: false }, ...filteredChatSession];
+        }
+
+        return prev;
+      });
     }
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-    };
-  }, []);
+  }, [newMessage]);
 
   return (
     <div className="grid grid-cols-4 w-screen h-screen max-h-screen">
@@ -100,13 +109,14 @@ export default function ChatPage() {
           selectedSession={selectedSession}
           chatSessions={chatSessions}
           handleOpenOnlineUsers={handleOpenOnlineUsers}
+          newChatMessage={newMessage}
+          setChatSessions={setChatSessions}
         />
       </div>
 
       <ConversationPanel
         currentUser={user!}
         selectedSession={selectedSession!}
-        isConnected={isConnected}
         newChatMessage={newMessage}
       />
 
