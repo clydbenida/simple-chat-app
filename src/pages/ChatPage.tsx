@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import { useLoaderData } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import fetchAPI, { socket } from "../api";
@@ -13,14 +12,11 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 export default function ChatPage() {
   const dispatch = useAppDispatch();
   const chatSessions = useAppSelector(state => state.chatSessions);
-  const navigate = useNavigate();
+  const user = useLoaderData() as UserType;
 
   const [showOnlineUsers, setShowOnlineUsers] = useState(false);
-  const [user, setUser] = useState<UserType>();
   const [selectedSession, setSelectedSession] = useState<ChatSessionType>();
   const [newMessage, setNewMessage] = useState<MessageType>();
-
-  const token = Cookies.get("token");
 
   function handleOpenOnlineUsers() {
     setShowOnlineUsers(true);
@@ -49,17 +45,6 @@ export default function ChatPage() {
   }, [user]);
 
   useEffect(() => {
-    const userFromLocal = localStorage.getItem("user");
-    if (!token || !userFromLocal) {
-      navigate("/");
-
-      return;
-    }
-
-    setUser(JSON.parse(userFromLocal));
-  }, [token]);
-
-  useEffect(() => {
     async function fetchChatSessions() {
       const { data } = await fetchAPI(
         "get",
@@ -67,7 +52,6 @@ export default function ChatPage() {
       );
 
       if (data) {
-        console.log("dispatched action");
         dispatch(assignChatSessions(data));
       }
     }
@@ -86,8 +70,6 @@ export default function ChatPage() {
       dispatch(pushSessionToTop(newMessage));
     }
   }, [newMessage]);
-
-  console.log("Chat sessions: ", chatSessions)
 
   return (
     <div className="grid grid-cols-4 w-screen h-screen max-h-screen">

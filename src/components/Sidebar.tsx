@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { ChatSessionType, ParticipantType, SideBarProps } from "../types";
 import ChatItem from "./ChatItem";
+import { Form } from "react-router-dom";
 
 export default function Sidebar({
   chatSessions,
@@ -52,7 +53,7 @@ export default function Sidebar({
 
   return (
     <div>
-      <div className="pt-2 px-2">
+      <div className="pt-2 px-2 flex justify-between">
         <button
           onClick={handleOpenOnlineUsers}
           type="button"
@@ -60,6 +61,14 @@ export default function Sidebar({
         >
           New Chat
         </button>
+        <Form action="/logout" method="post">
+          <button
+            type="submit"
+            className="bg-amber-700 text-white p-2 px-4 rounded-lg"
+          >
+            Logout
+          </button>
+        </Form>
       </div>
       <div className="px-2 overflow-y-auto ">{renderChatItems}</div>
     </div>

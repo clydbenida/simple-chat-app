@@ -1,4 +1,4 @@
-import { createBrowserRouter, redirect, useActionData } from "react-router-dom";
+import { createBrowserRouter, redirect } from "react-router-dom";
 import Cookies from "js-cookie";
 import App from "./pages/App";
 import ChatPage from "./pages/ChatPage";
@@ -14,6 +14,21 @@ const router = createBrowserRouter([
   {
     path: "chat",
     element: <ChatPage />,
+    loader: async () => {
+      try {
+        const userFromLocal = localStorage.getItem("user");
+        const token = Cookies.get("token");
+
+        if (!token || !userFromLocal) {
+          return redirect("/");
+        }
+
+        return JSON.parse(userFromLocal)
+      } catch (err) {
+        console.log(err);
+        return err;
+      }
+    },
     action: async ({ request }) => {
       try {
         const formData = await request.formData();
@@ -37,7 +52,20 @@ const router = createBrowserRouter([
         return err;
       }
     },
-  }
+  },
+  {
+    path: "logout",
+    action: async ({ request }) => {
+      try {
+        Cookies.remove("token");
+        localStorage.removeItem("user");
+        return redirect("/")
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+  },
 ])
 
 export default router;
