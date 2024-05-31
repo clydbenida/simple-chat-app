@@ -1,6 +1,7 @@
-import { AddAPhoto, VideoCameraFront } from "@mui/icons-material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { MessageComposerPropTypes } from "../types";
 import { useMemo } from "react";
+import { faCamera, faVideo } from "@fortawesome/free-solid-svg-icons";
 
 export default function MessageComposer({ sendMessage, message, setMessage, openMediaCapture, attachments }: MessageComposerPropTypes) {
   const buttonClassName = "p-2 mx-2 rounded-full hover:bg-gray-100"
@@ -25,10 +26,10 @@ export default function MessageComposer({ sendMessage, message, setMessage, open
       </div>
       <div className="h-14 flex p-2 items-center justify-evenly">
         <button className={buttonClassName} onClick={openMediaCapture}>
-          <VideoCameraFront fontSize="small" />
+          <FontAwesomeIcon icon={faVideo} width={25} height={25} />
         </button>
         <button className={buttonClassName} onClick={handlePhotoClick}>
-          <AddAPhoto fontSize="small" />
+          <FontAwesomeIcon icon={faCamera} width={25} height={25} />
         </button>
         <form className="flex flex-grow" onSubmit={sendMessage}>
           <input

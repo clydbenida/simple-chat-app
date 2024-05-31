@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, Divider, List, ListItemButton, ListItemText } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import fetchAPI from "../api";
 import { ChatSessionType, UserType } from "../types";
+import Modal from "./CustomModal";
 
 interface OnlineUsersDialogProps {
   showOnlineUsers: boolean;
@@ -37,20 +37,19 @@ export default function OnlineUsersDialog({ showOnlineUsers, currentUser, handle
 
   const renderOnlineUserList = useMemo(
     () => onlineUsers.map(user => (
-      <ListItemButton onClick={() => handleClickListItemButton(user.user_id)}>
-        <ListItemText primary={user.username} />
-      </ListItemButton>
+      <button className="menu py-4 rounded-md hover:bg-gray-50 w-full" onClick={() => handleClickListItemButton(user.user_id)}>
+        {user.username}
+      </button>
     )), [onlineUsers])
 
   return (
-    <Dialog open={showOnlineUsers} onClose={handleCloseOnlineUsers}>
-      <DialogContent style={{ padding: 0 }}>
-        <h4 className="py-5 px-10">Online Users</h4>
-        <Divider />
-        <List>
+    <Modal show={showOnlineUsers} onHide={handleCloseOnlineUsers}>
+      <div className="modal-box w-1/2 max-w-xl p-2">
+        <input type="text" className="input input-lg w-full focus:outline-none focus:border-0" placeholder="Enter username..." />
+        <div className="h-[15rem] overflow-y-scroll">
           {renderOnlineUserList}
-        </List>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </Modal>
   );
 }

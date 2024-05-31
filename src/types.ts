@@ -1,5 +1,10 @@
-import { DialogProps } from "@mui/material";
 import React, { FormEvent, SetStateAction } from "react";
+
+export interface CustomModalTypes {
+  children?: any;
+  show: boolean;
+  onHide: () => void;
+}
 
 export type AttachmentTypes = string;
 
@@ -7,9 +12,10 @@ export interface ChatPageActionTypes {
   username: string;
 }
 
-export interface MediaCaptureDialogProps extends DialogProps {
+export interface MediaCaptureDialogProps {
   closeMediaCapture: () => void;
   setAttachments: React.Dispatch<SetStateAction<string[] | undefined>>;
+  open: boolean;
 }
 
 export interface MessageComposerPropTypes {

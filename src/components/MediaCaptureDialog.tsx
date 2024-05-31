@@ -1,6 +1,6 @@
 import { createRef, useEffect, useState } from "react";
-import { Dialog, DialogContent } from "@mui/material";
 import { MediaCaptureDialogProps } from "../types";
+import CustomModal from "./CustomModal";
 
 export default function MediaCaptureDialog(props: MediaCaptureDialogProps) {
   const [noMedia, setNoMedia] = useState(true);
@@ -67,8 +67,8 @@ export default function MediaCaptureDialog(props: MediaCaptureDialogProps) {
   }, [props.open]);
 
   return (
-    <Dialog open={props.open}>
-      <DialogContent>
+    <CustomModal show={props.open} onHide={props.closeMediaCapture}>
+      <div className="modal-box">
         <div>
           Video content
           <video autoPlay ref={videoRef} />
@@ -77,7 +77,7 @@ export default function MediaCaptureDialog(props: MediaCaptureDialogProps) {
         <button onClick={handleCancelClick}>Cancel</button>
         <button onClick={handleCaptureClick}>Capture</button>
 
-      </DialogContent>
-    </Dialog>
+      </div>
+    </CustomModal>
   );
 }

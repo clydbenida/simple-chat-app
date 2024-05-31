@@ -2,9 +2,10 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import fetchAPI, { socket } from "../api";
 import { ConversationPanelProps, MessageType, ParticipantType } from "../types";
 import MessageRow from "./MessageRow";
-import { Call, MenuOpen } from "@mui/icons-material";
 import MessageComposer from "./MessageComposer";
 import MediaCaptureDialog from "./MediaCaptureDialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 export default function ConversationPanel({
   selectedSession,
@@ -141,11 +142,11 @@ export default function ConversationPanel({
               <span className="text-gray-400 text-sm">Active</span>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <button className="bg-sky-100 p-2 rounded-full hover:bg-sky-200">
-                <Call />
+              <button className="bg-sky-100 p-2 px-3 rounded-box hover:bg-sky-200">
+                <FontAwesomeIcon icon={faPhone} />
               </button>
-              <button className="bg-sky-100 p-2 rounded-full hover:bg-sky-200">
-                <MenuOpen />
+              <button className="bg-sky-100 p-2 px-3 rounded-box hover:bg-sky-200">
+                <FontAwesomeIcon icon={faBars} />
               </button>
             </div>
           </div>
