@@ -5,7 +5,7 @@ import MessageRow from "./MessageRow";
 import MessageComposer from "./MessageComposer";
 import MediaCaptureDialog from "./MediaCaptureDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faEye, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 export default function ConversationPanel({
   selectedSession,
@@ -152,6 +152,12 @@ export default function ConversationPanel({
           </div>
 
           <div className="flex flex-grow basis-0 flex-col-reverse px-3 overflow-y-auto">
+            <div className="text-xs text-gray-400 flex flex-row-reverse">
+              <div>
+                Seen {" "}
+                <FontAwesomeIcon icon={faEye} />
+              </div>
+            </div>
             {renderMessageRows}
           </div>
 
